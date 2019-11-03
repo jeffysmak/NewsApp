@@ -1,6 +1,7 @@
 package com.electrosoft.newsapplication.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.electrosoft.newsapplication.R;
+import com.electrosoft.newsapplication.activities.NewsDetailed;
 import com.electrosoft.newsapplication.pojos.Article;
 import com.electrosoft.newsapplication.pojos.News;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -44,10 +48,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, final int position) {
+        holder.setListener(new clickListener() {
+            @Override
+            public void onClick(int i, View v) {
+                context.startActivity(new Intent(context, NewsDetailed.class).putExtra("Extra_NewsArticle", NewsList.get(i)));
+            }
+        });
         holder.newsTitle.setText(NewsList.get(position).getTitle());
-
         String[] a = NewsList.get(position).getPublishedAt().split("T");
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.US);
         try {
             Date date = simpleDateFormat.parse(a[0] + a[1]);
@@ -59,9 +67,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             e.printStackTrace();
             Log.i("errordate", e.getLocalizedMessage());
         }
-
-//        holder.date.setText("error");
         Glide.with(context).load(NewsList.get(position).getUrlToImage()).into(holder.newsImage);
+        try {
+            getSourceUrl(NewsList.get(position).getUrl());
+            Glide.with(context).load(getSourceUrl(NewsList.get(position).getUrl())).into(holder.thumbnail);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+//        Glide.with(context).load(NewsList.get(position).)
         holder.author.setText(NewsList.get(position).getAuthor() == null ? NewsList.get(position).getSource().getName() : NewsList.get(position).getAuthor());
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,20 +84,36 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         });
     }
 
+    private String getSourceUrl(String url) throws URISyntaxException {
+        URI uri = new URI(url);
+        if (uri.getHost() != null) {
+            Log.i("HostName ->", "logo.clearbit.com/" + uri.getHost());
+            return "https://logo.clearbit.com/" + uri.getHost();
+        }
+        return "";
+    }
+
+
     @Override
     public int getItemCount() {
         return NewsList.size();
     }
 
-    class NewsViewHolder extends RecyclerView.ViewHolder {
+    class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ImageView thumbnail, newsImage;
         TextView author, newsTitle, date;
         ImageButton shareButton;
 
+        clickListener listener;
+
+        public void setListener(clickListener listener) {
+            this.listener = listener;
+        }
 
         public NewsViewHolder(@NonNull View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             thumbnail = itemView.findViewById(R.id.newsThumbnail);
             author = itemView.findViewById(R.id.newsPoster);
             newsTitle = itemView.findViewById(R.id.newsTitle);
@@ -92,5 +121,14 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
             date = itemView.findViewById(R.id.newsDate);
             shareButton = itemView.findViewById(R.id.newsShareButton);
         }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(getAdapterPosition(), v);
+        }
+    }
+
+    private interface clickListener {
+        void onClick(int i, View v);
     }
 }
