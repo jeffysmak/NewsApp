@@ -1,6 +1,7 @@
 package com.electrosoft.newsapplication.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,13 @@ import com.electrosoft.newsapplication.R;
 import com.electrosoft.newsapplication.pojos.Article;
 import com.electrosoft.newsapplication.pojos.News;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder> {
 
@@ -29,11 +36,6 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         this.context = context;
     }
 
-    public void setNewsList(List<Article> newsList) {
-        NewsList = newsList;
-        notifyDataSetChanged();
-    }
-
     @NonNull
     @Override
     public NewsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,13 +45,28 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, final int position) {
         holder.newsTitle.setText(NewsList.get(position).getTitle());
-        holder.date.setText(NewsList.get(position).getPublishedAt());
+
+        String[] a = NewsList.get(position).getPublishedAt().split("T");
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.US);
+        try {
+            Date date = simpleDateFormat.parse(a[0] + a[1]);
+            if (date != null) {
+                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy 'at' HH:mm", Locale.US);
+                holder.date.setText(sdf.format(date));
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            Log.i("errordate", e.getLocalizedMessage());
+        }
+
+//        holder.date.setText("error");
         Glide.with(context).load(NewsList.get(position).getUrlToImage()).into(holder.newsImage);
-        holder.author.setText(NewsList.get(position).getAuthor());
+        holder.author.setText(NewsList.get(position).getAuthor() == null ? NewsList.get(position).getSource().getName() : NewsList.get(position).getAuthor());
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, NewsList.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+
             }
         });
     }

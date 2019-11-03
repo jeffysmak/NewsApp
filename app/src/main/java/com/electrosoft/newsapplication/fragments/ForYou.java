@@ -42,6 +42,15 @@ public class ForYou extends Fragment implements SwipeRefreshLayout.OnRefreshList
 
     private int currentPage = 1;
 
+    private static ForYou Instance;
+
+    public static ForYou getInstance() {
+        if (Instance == null) {
+            Instance = new ForYou();
+        }
+        return Instance;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -65,37 +74,44 @@ public class ForYou extends Fragment implements SwipeRefreshLayout.OnRefreshList
 
         Call<News> dataCall = service.getTopHeadlineNews();
 
-        if (!dataCall.isExecuted()) {
-            dataCall.enqueue(new Callback<News>() {
-                @Override
-                public void onResponse(Call<News> call, Response<News> response) {
-                    progressBar.setVisibility(View.GONE);
-                    generateNewsListItems(newsAdapter == null, response.body());
-                    if (refreshLayout.isRefreshing()) {
-                        refreshLayout.setRefreshing(false);
-                    }
+        dataCall.enqueue(new Callback<News>() {
+            @Override
+            public void onResponse(Call<News> call, Response<News> response) {
+                progressBar.setVisibility(View.GONE);
+                generateNewsListItems(newsAdapter == null, response.body());
+                if (refreshLayout.isRefreshing()) {
+                    refreshLayout.setRefreshing(false);
                 }
+            }
 
-                @Override
-                public void onFailure(Call<News> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-                    Log.i("FUCK", t.getLocalizedMessage());
-                    Toast.makeText(getActivity(), "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<News> call, Throwable t) {
+                progressBar.setVisibility(View.GONE);
+                Log.i("FUCK", t.getLocalizedMessage());
+                Toast.makeText(getActivity(), "Something went wrong...Please try later!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void generateNewsListItems(boolean newInstance, News news) {
-        newsList.addAll(news.getArticles());
-        if (newInstance) {
-            newsAdapter = new NewsAdapter(newsList, getActivity());
-            recyclerView.setAdapter(newsAdapter);
-            Toast.makeText(getActivity(), "Fetched -> " + newsList.size(), Toast.LENGTH_SHORT).show();
-        } else {
-            newsAdapter.setNewsList(newsList);
-            Toast.makeText(getActivity(), "Fetched New -> " + newsList.size(), Toast.LENGTH_SHORT).show();
-        }
+        newsAdapter = new NewsAdapter(news.getArticles(), getActivity());
+        recyclerView.setAdapter(newsAdapter);
+//        if (newInstance) {
+//            newsList.addAll(news.getArticles());
+//            newsAdapter = new NewsAdapter(newsList, getActivity());
+//            recyclerView.setAdapter(newsAdapter);
+//            Toast.makeText(getActivity(), "Fetched -> " + newsList.size(), Toast.LENGTH_SHORT).show();
+//        } else {
+//            int i = 0;
+//            for (Article a : news.getArticles()) {
+//                if (!newsList.contains(a) && newsList.indexOf(a) != -1) {
+//                    newsList.add(a);
+//                    newsAdapter.notifyDataSetChanged();
+//                    i++;
+//                }
+//            }
+//            Toast.makeText(getActivity(), "Fetched New -> " + i, Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override

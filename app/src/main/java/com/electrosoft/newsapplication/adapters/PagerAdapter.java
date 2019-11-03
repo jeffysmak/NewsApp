@@ -28,21 +28,21 @@ public class PagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new ForYou();
+                return ForYou.getInstance();
             case 1:
-                return new Business();
+                return Business.getInstance();
             case 2:
-                return new Entertainment();
+                return Entertainment.getInstance();
             case 3:
-                return new General();
+                return General.getInstance();
             case 4:
-                return new Health();
+                return Health.getInstance();
             case 5:
-                return new Science();
+                return Science.getInstance();
             case 6:
-                return new Sports();
+                return Sports.getInstance();
             case 7:
-                return new Technology();
+                return Technology.getInstance();
         }
         return null;
     }
