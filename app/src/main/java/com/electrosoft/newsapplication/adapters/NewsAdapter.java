@@ -69,13 +69,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.NewsViewHolder
         }
         Glide.with(context).load(NewsList.get(position).getUrlToImage()).into(holder.newsImage);
         try {
-            getSourceUrl(NewsList.get(position).getUrl());
             Glide.with(context).load(getSourceUrl(NewsList.get(position).getUrl())).into(holder.thumbnail);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-//        Glide.with(context).load(NewsList.get(position).)
-        holder.author.setText(NewsList.get(position).getAuthor() == null ? NewsList.get(position).getSource().getName() : NewsList.get(position).getAuthor());
+        holder.author.setText(NewsList.get(position).getSource().getName());
         holder.shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
