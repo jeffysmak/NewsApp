@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +26,16 @@ public class NewsDetailed extends AppCompatActivity {
     private Article article;
 
     private ImageView logo, image;
-    private TextView source, description, dateTxt;
+    private TextView source, description, dateTxt, title;
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return false;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +45,13 @@ public class NewsDetailed extends AppCompatActivity {
         toolbar = findViewById(R.id.detailedViewToolbar);
         setSupportActionBar(toolbar);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         this.article = (Article) getIntent().getSerializableExtra("Extra_NewsArticle");
 
         setTitle(article.getTitle());
 
+        title = findViewById(R.id.newsTitle);
         logo = findViewById(R.id.newsDetailedThumbnail);
         source = findViewById(R.id.newsDetailedSource);
         image = findViewById(R.id.newsDetailedImage);
@@ -51,6 +64,9 @@ public class NewsDetailed extends AppCompatActivity {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
+        title.setText(article.getTitle());
+        source.setText(article.getSource().getName());
 
         String[] a = article.getPublishedAt().split("T");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.US);
@@ -65,7 +81,7 @@ public class NewsDetailed extends AppCompatActivity {
             Log.i("errordate", e.getLocalizedMessage());
         }
 
-        description.setText(article.getDescription());
+        description.setText(article.getContent() != null ? article.getContent().split("…")[0] : article.getDescription());
     }
 
     private String getSourceUrl(String url) throws URISyntaxException {
