@@ -14,7 +14,7 @@
         <!-- Gets rid of the search icon -->
         <item name="searchIcon">@drawable/ic_search_black_24dp</item>
         <!-- Gets rid of the "underline" in the text -->
-        <item name="defaultQueryHint">@color/clrPrm</item>
+        <item name="defaultQueryHint">@color/white</item>
 
         <item name="android:textColor">@color/white</item>
         <!-- Gets rid of the search icon when the SearchView is expanded -->

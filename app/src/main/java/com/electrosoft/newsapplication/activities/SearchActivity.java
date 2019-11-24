@@ -1,28 +1,20 @@
-package com.electrosoft.newsapplication.fragments;
+package com.electrosoft.newsapplication.activities;
 
-
-import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.text.Html;
+import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.electrosoft.newsapplication.R;
 import com.electrosoft.newsapplication.adapters.NewsAdapter;
 import com.electrosoft.newsapplication.api.GetDataService;
 import com.electrosoft.newsapplication.api.RetrofitClientInstance;
-import com.electrosoft.newsapplication.pojos.Article;
-import com.electrosoft.newsapplication.pojos.News;
 import com.electrosoft.newsapplication.pojos.Post;
 import com.google.gson.JsonElement;
 
@@ -30,23 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class General extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class SearchActivity extends AppCompatActivity {
 
-    private SwipeRefreshLayout refreshLayout;
+
+    private Toolbar toolbar;
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
     private TextView noNews;
@@ -55,43 +41,32 @@ public class General extends Fragment implements SwipeRefreshLayout.OnRefreshLis
 
     private List<Post> newsList;
 
-    private int category_id;
-
-
-    public General(int id) {
-
-        category_id = id;
-        newsList = new ArrayList<>();
-        // Required empty public constructor
-    }
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search);
 
-        View v = inflater.inflate(R.layout.fragment_general, container, false);
-
-        recyclerView = v.findViewById(R.id.mgeneralRecycler);
-        refreshLayout = v.findViewById(R.id.mgeneralSwipeRefresh);
-        progressBar = v.findViewById(R.id.mProgressBar);
-        noNews = v.findViewById(R.id.noNews);
+        toolbar = findViewById(R.id.mToolbar);
+        setSupportActionBar(toolbar);
+        setTitle(getIntent().getStringExtra("searchKey"));
         newsList = new ArrayList<>();
-        refreshLayout.setOnRefreshListener(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
-        getTopHeadlinesNews();
-        return v;
+        recyclerView = findViewById(R.id.mSearchRecycler);
+        progressBar = findViewById(R.id.mProgressBar);
+        noNews = findViewById(R.id.noNews);
+        newsList = new ArrayList<>();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+        getSearchResults();
     }
 
 
-    private void getTopHeadlinesNews() {
+
+    private void getSearchResults() {
 
         GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
 
 
-        Log.d("NewsApp","Category: "+category_id);
-        Call<JsonElement> dataCall = service.getNewsByCatID(String.valueOf(category_id));
+        Call<JsonElement> dataCall = service.searchPosts(getIntent().getStringExtra("searchKey"));
 
         dataCall.enqueue(new Callback<JsonElement>() {
             @Override
@@ -115,7 +90,6 @@ public class General extends Fragment implements SwipeRefreshLayout.OnRefreshLis
                             String content = objContent.getString("rendered");
                             String img_url = mainObject.getString("jetpack_featured_media_url");
                             String link = mainObject.getString("link");
-
                             newsList.add(new Post(Integer.parseInt(id),title,dateString,img_url,content,link));
 
                         }
@@ -147,14 +121,10 @@ public class General extends Fragment implements SwipeRefreshLayout.OnRefreshLis
             noNews.setVisibility(View.VISIBLE);
         else
             noNews.setVisibility(View.GONE);
-        newsAdapter = new NewsAdapter(newsList, getActivity());
+        newsAdapter = new NewsAdapter(newsList, this);
         recyclerView.setAdapter(newsAdapter);
 
-        refreshLayout.setRefreshing(false);
     }
 
-    @Override
-    public void onRefresh() {
-        getTopHeadlinesNews();
-    }
+
 }

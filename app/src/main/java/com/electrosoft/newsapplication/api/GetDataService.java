@@ -1,9 +1,12 @@
 package com.electrosoft.newsapplication.api;
 
 import com.electrosoft.newsapplication.Common.Common;
+import com.electrosoft.newsapplication.pojos.Category;
 import com.electrosoft.newsapplication.pojos.News;
+import com.google.gson.JsonElement;
 
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
@@ -13,6 +16,22 @@ import retrofit2.http.Query;
 public interface GetDataService {
     @GET(Common.TOPHEADLINES + "?country=us&page=1&apiKey=" + Common.APIKEY)
     Call<News> getTopHeadlineNews();
+
+    /*getAllLatestNews used for all latest news list*/
+    @GET("wp-json/wp/v2/posts?_embed")
+    Call<JsonElement> getAllLatestNews(@Query("categories") String catID, @Query("page") int per_page);
+
+    @GET("wp-json/wp/v2/posts?status=publish&_embed")
+    Call<JsonElement> getNewsByCatID(@Query("categories") String catID);
+
+
+    /*search used for search all project content*/
+    @GET("wp-json/wp/v2/posts/?_embed")
+    Call<JsonElement> searchPosts(@Query("search") String world);
+
+    /*category() used for fetch main category list*/
+    @GET("wp-json/wp/v2/categories?per_page=100&_embed")
+    Call<List<Category>> getCategories();
 
     @GET(Common.TOPHEADLINES + "?country=us&category=business&page=1&apiKey=" + Common.APIKEY)
     Call<News> getBusinessNews();

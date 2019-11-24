@@ -12,9 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".activities.SearchActivity"
+            android:parentActivityName=".activities.Dashboard" ></activity>
         <activity
             android:name=".activities.NewsDetailed"
-            android:parentActivityName=".activities.Dashboard"></activity>
+            android:parentActivityName=".activities.Dashboard" />
         <activity android:name=".activities.Dashboard" />
         <activity android:name=".MainActivity">
             <intent-filter>

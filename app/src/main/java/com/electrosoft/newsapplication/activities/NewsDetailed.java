@@ -3,18 +3,29 @@ package com.electrosoft.newsapplication.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.electrosoft.newsapplication.R;
-import com.electrosoft.newsapplication.pojos.Article;
+import com.electrosoft.newsapplication.pojos.Post;
+import com.electrosoft.newsapplication.pojos.WebHelper;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,10 +34,11 @@ import java.util.Locale;
 public class NewsDetailed extends AppCompatActivity {
 
     private Toolbar toolbar;
-    private Article article;
+    private Post article;
 
-    private ImageView logo, image;
-    private TextView source, description, dateTxt, title;
+    private TextView  dateTxt, title;
+    private WebView description;
+    private ImageView newsImage;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -47,28 +59,23 @@ public class NewsDetailed extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        this.article = (Article) getIntent().getSerializableExtra("Extra_NewsArticle");
+        this.article = (Post) getIntent().getSerializableExtra("Extra_NewsArticle");
 
-        setTitle(article.getTitle());
+        setTitle(String.valueOf(Html.fromHtml(article.getTitle())));
 
         title = findViewById(R.id.newsTitle);
-        logo = findViewById(R.id.newsDetailedThumbnail);
-        source = findViewById(R.id.newsDetailedSource);
-        image = findViewById(R.id.newsDetailedImage);
         description = findViewById(R.id.newsDetailedDescription);
         dateTxt = findViewById(R.id.newsDetailedDate);
+        newsImage = findViewById(R.id.newsImage);
+        Log.d("NewsDetails",String.valueOf(Html.fromHtml(article.getTitle())));
 
-        Glide.with(getApplicationContext()).load(article.getUrlToImage()).into(image);
-        try {
-            Glide.with(getApplicationContext()).load(getSourceUrl(article.getUrl())).into(logo);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        title.setText(String.valueOf(Html.fromHtml(article.getTitle())).replace("\n",""));
 
-        title.setText(article.getTitle());
-        source.setText(article.getSource().getName());
 
-        String[] a = article.getPublishedAt().split("T");
+
+
+
+        String[] a = article.getDate().split("T");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss", Locale.US);
         try {
             Date date = simpleDateFormat.parse(a[0] + a[1]);
@@ -81,7 +88,33 @@ public class NewsDetailed extends AppCompatActivity {
             Log.i("errordate", e.getLocalizedMessage());
         }
 
-        description.setText(article.getContent() != null ? article.getContent().split("…")[0] : article.getDescription());
+
+        description.getSettings().setJavaScriptEnabled(true);
+        description.setBackgroundColor(Color.TRANSPARENT);
+        description.getSettings().setDefaultFontSize(16);
+        description.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        description.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN);
+
+
+        Document doc =  Jsoup.parse(article.getContent());
+        if(article.getImage_url().equals(""))
+        {
+            newsImage.setVisibility(View.GONE);
+        }
+        else {
+            try {
+                doc.select("img[src]").remove();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Glide.with(this).load(article.getImage_url()).into(newsImage);
+        }
+        String html = WebHelper.docToBetterHTML(doc, NewsDetailed.this);
+        String link = "" + article.getId() + "/" + title;
+        description.loadDataWithBaseURL(link, html, "text/html", "utf-8", "");
+
+
+      //  description.setText(Html.fromHtml(article.getContent()));
     }
 
     private String getSourceUrl(String url) throws URISyntaxException {
