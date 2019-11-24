@@ -18,16 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.electrosoft.newsapplication.R;
 import com.electrosoft.newsapplication.activities.NewsDetailed;
-import com.electrosoft.newsapplication.pojos.Article;
-import com.electrosoft.newsapplication.pojos.News;
 import com.electrosoft.newsapplication.pojos.Post;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;

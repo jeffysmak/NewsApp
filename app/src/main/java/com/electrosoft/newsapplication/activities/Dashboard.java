@@ -14,14 +14,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.electrosoft.newsapplication.R;
 import com.electrosoft.newsapplication.adapters.PagerAdapter;
 import com.electrosoft.newsapplication.api.GetDataService;
 import com.electrosoft.newsapplication.api.RetrofitClientInstance;
 import com.electrosoft.newsapplication.pojos.Category;
-import com.electrosoft.newsapplication.pojos.News;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;

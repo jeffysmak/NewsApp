@@ -21,8 +21,6 @@ import com.electrosoft.newsapplication.R;
 import com.electrosoft.newsapplication.adapters.NewsAdapter;
 import com.electrosoft.newsapplication.api.GetDataService;
 import com.electrosoft.newsapplication.api.RetrofitClientInstance;
-import com.electrosoft.newsapplication.pojos.Article;
-import com.electrosoft.newsapplication.pojos.News;
 import com.electrosoft.newsapplication.pojos.Post;
 import com.google.gson.JsonElement;
 
@@ -30,11 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
