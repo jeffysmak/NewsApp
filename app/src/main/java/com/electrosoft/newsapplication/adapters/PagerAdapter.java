@@ -25,7 +25,7 @@ public class PagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
 
-       return new General(categoryList.get(position).getId());
+       return new General(categoryList.get(position).getId(),categoryList.get(position).getName());
     }
 
     @Override

@@ -6,4 +6,12 @@
     <color name="white">#ffffff</color>
     <color name="clrPrm">#3547ad</color>
     <color name="grey">#d0d0d0</color>
+
+
+    //cricket colors
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="navigationBarColor">#000000</color>
+    <color name="match_name_display_color">#91BF17</color>
+    <color name="match_winning_colorname_gray">#DFDFDF</color>
+    <color name="transparent">#e8ffffff</color>
 </resources>

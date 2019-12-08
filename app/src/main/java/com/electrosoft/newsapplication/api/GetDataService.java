@@ -25,6 +25,9 @@ public interface GetDataService {
     Call<JsonElement> searchPosts(@Query("search") String world);
 
 
+    @GET("cbzandroid/2.0/currentmatches.json")
+    Call<JsonElement> getCricket();
+
 
 
 }
