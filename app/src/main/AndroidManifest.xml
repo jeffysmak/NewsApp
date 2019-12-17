@@ -12,8 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.SearchActivity"
-            android:parentActivityName=".activities.Dashboard" ></activity>
+        <activity android:name=".activities.LoginActivity"></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-2953492676760965~3815133454" />
+
+        <activity
+            android:name=".activities.SearchActivity"
+            android:parentActivityName=".activities.Dashboard" />
         <activity
             android:name=".activities.NewsDetailed"
             android:parentActivityName=".activities.Dashboard" />

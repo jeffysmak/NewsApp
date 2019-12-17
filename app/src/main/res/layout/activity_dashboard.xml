@@ -77,10 +77,18 @@
             app:tabTextColor="@color/grey" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ProgressBar
+        android:id="@+id/mProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/mViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+</RelativeLayout>
 
 </LinearLayout>
