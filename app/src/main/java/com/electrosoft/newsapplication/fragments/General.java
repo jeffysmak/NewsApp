@@ -267,6 +267,11 @@ public class General extends Fragment implements SwipeRefreshLayout.OnRefreshLis
                             newsList.add(new Post(Integer.parseInt(id),title,dateString,img_url,content,link));
 
                         }
+                        for (int x = 0;x<newsList.size();x++)
+                        {
+                            if(x%3==0&&x!=0)
+                                newsList.add(x,new Post(1111,"","","","",""));
+                        }
 
 
                     }
