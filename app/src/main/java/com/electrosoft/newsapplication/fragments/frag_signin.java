@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,8 +26,8 @@ import com.google.firebase.auth.PhoneAuthProvider;
 public class frag_signin extends Fragment {
 
     private Button signIn;
-    private EditText userEmail,userPass;
-    private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks;
+    private EditText userEmail, userPass;
+    private ProgressBar progressBar;
 
     private String TAG = "ABCTAG";
 
@@ -38,6 +39,7 @@ public class frag_signin extends Fragment {
         // Inflate the layout for this fragment
         View fragMentView = inflater.inflate(R.layout.fragment_frag_signin, container, false);
 
+        progressBar = fragMentView.findViewById(R.id.signInPB);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -47,8 +49,10 @@ public class frag_signin extends Fragment {
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(everyThingGood())
-                gotoSignIn();
+                if (everyThingGood()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    gotoSignIn();
+                }
             }
         });
 
@@ -63,11 +67,13 @@ public class frag_signin extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithEmail:success");
+                            progressBar.setVisibility(View.GONE);
                             startActivity(new Intent(getActivity(), Dashboard.class));
                             getActivity().finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            progressBar.setVisibility(View.GONE);
                             Toast.makeText(getActivity(), "Invalid Email or Password",
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -77,17 +83,15 @@ public class frag_signin extends Fragment {
     }
 
     private boolean everyThingGood() {
-        boolean good =true;
+        boolean good = true;
 
 
-        if(userEmail.getText().toString().equals(""))
-        {
-            good=false;
+        if (userEmail.getText().toString().equals("")) {
+            good = false;
             userEmail.setError("Email is Empty");
         }
-        if(userPass.getText().toString().equals(""))
-        {
-            good=false;
+        if (userPass.getText().toString().equals("")) {
+            good = false;
             userPass.setError("Please Enter Password");
         }
 

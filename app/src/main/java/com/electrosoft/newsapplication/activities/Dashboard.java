@@ -196,7 +196,7 @@ public class Dashboard extends AppCompatActivity {
                 categoryList = response.body();
                 viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), categoryList, FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT));
                 tabLayout.setupWithViewPager(viewPager);
-               // Log.d("ItIsNotComing",response.toString());
+                // Log.d("ItIsNotComing",response.toString());
             }
 
             @Override

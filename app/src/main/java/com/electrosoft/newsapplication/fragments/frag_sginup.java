@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,12 +27,14 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 
 public class frag_sginup extends Fragment {
-    public interface OnEmailCheckListener{
+    public interface OnEmailCheckListener {
         void onSucess(boolean isRegistered);
     }
+
     private String TAG = "ABCTAG";
-    private EditText userName,userEmail,userPass,userPass2;
+    private EditText userName, userEmail, userPass, userPass2;
     private Button signUp;
+    private ProgressBar progressBar;
 
 
     private FirebaseAuth mAuth;
@@ -41,6 +44,8 @@ public class frag_sginup extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragMentView = inflater.inflate(R.layout.fragment_frag_sginup, container, false);
+
+        progressBar = fragMentView.findViewById(R.id.signupPB);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -53,15 +58,15 @@ public class frag_sginup extends Fragment {
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if( everyThingGood())
-                {
-                    isCheckEmail(userEmail.getText().toString(),new OnEmailCheckListener(){
+                if (everyThingGood()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    isCheckEmail(userEmail.getText().toString(), new OnEmailCheckListener() {
                         @Override
                         public void onSucess(boolean isRegistered) {
-
-                            if(isRegistered){
+                            if (isRegistered) {
                                 //The email was registered before
-                                Toast.makeText(getContext(), "Email ALready Registered.", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Email Already Registered.", Toast.LENGTH_SHORT).show();
                             } else {
                                 //The email not registered before
                                 doSignUp();
@@ -76,10 +81,7 @@ public class frag_sginup extends Fragment {
         return fragMentView;
     }
 
-    private void doSignUp()
-    {
-
-
+    private void doSignUp() {
         mAuth.createUserWithEmailAndPassword(userEmail.getText().toString(), userPass.getText().toString())
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
@@ -87,7 +89,9 @@ public class frag_sginup extends Fragment {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                           // Toast.makeText(getContext(), "Successfull", Toast.LENGTH_SHORT).show();
+                            // Toast.makeText(getContext(), "Successfull", Toast.LENGTH_SHORT).show();
+
+                            progressBar.setVisibility(View.GONE);
 
                             FirebaseUser user = mAuth.getCurrentUser();
 
@@ -103,7 +107,8 @@ public class frag_sginup extends Fragment {
                                         Log.d("Display name: ", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
                                     }
                                 }
-                            });;
+                            });
+                            ;
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -119,50 +124,38 @@ public class frag_sginup extends Fragment {
 
 
     private boolean everyThingGood() {
-        boolean good =true;
+        boolean good = true;
 
-        if(userName.getText().toString().equals(""))
-        {
-            good=false;
+        if (userName.getText().toString().equals("")) {
+            good = false;
             userName.setError("Name Required");
         }
-        if(userEmail.getText().toString().equals(""))
-        {
-            good=false;
+        if (userEmail.getText().toString().equals("")) {
+            good = false;
             userEmail.setError("Email is Required");
-        }
-        else if(!userEmail.getText().toString().contains("@"))
-        {
-            good=false;
+        } else if (!userEmail.getText().toString().contains("@")) {
+            good = false;
             userEmail.setError("Email is Invalid");
         }
-        if(userPass.getText().toString().equals(""))
-        {
-            good=false;
+        if (userPass.getText().toString().equals("")) {
+            good = false;
             userPass.setError("Password is Required");
-        }
-        else if(userPass.getText().toString().length()<6)
-        {
-            good=false;
+        } else if (userPass.getText().toString().length() < 6) {
+            good = false;
             userPass.setError("Password must be atleast 6 Characters");
-        }
-        else if(!userPass2.getText().toString().equals(userPass.getText().toString()))
-        {
-            good=false;
+        } else if (!userPass2.getText().toString().equals(userPass.getText().toString())) {
+            good = false;
             userPass2.setError("Passwords do not match");
         }
         return good;
     }
 
 
-    public void isCheckEmail(final String email,final OnEmailCheckListener listener){
-        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>()
-        {
+    public void isCheckEmail(final String email, final OnEmailCheckListener listener) {
+        mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
-            public void onComplete(@NonNull Task<SignInMethodQueryResult> task)
-            {
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                 boolean check = !task.getResult().getSignInMethods().isEmpty();
-
                 listener.onSucess(check);
 
             }

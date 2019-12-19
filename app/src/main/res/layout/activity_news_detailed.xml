@@ -39,28 +39,28 @@
                 android:layout_height="wrap_content"
                 android:text="How News Post Item's Title will appear in screen" />
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               >
-               <ImageView
-                   android:layout_width="13dp"
-                   android:layout_height="13dp"
-                   android:layout_gravity="center"
-                   android:src="@drawable/ic_access_time_black_24dp"
-                   />
-            <TextView
-                android:id="@+id/newsDetailedDate"
-                style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="5dp"
-                android:textSize="12sp"
-                android:textColor="@color/colorPrimary"
-                android:text="2019-10-19T12:50:00Z" />
-           </LinearLayout>
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_access_time_black_24dp"
+                    />
+                <TextView
+                    android:id="@+id/newsDetailedDate"
+                    style="@style/TextAppearance.AppCompat.Widget.ActionBar.Subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="5dp"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorPrimary"
+                    android:text="2019-10-19T12:50:00Z" />
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/newsImage"

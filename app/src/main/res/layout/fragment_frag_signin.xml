@@ -19,25 +19,24 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-
-
                 <EditText
                     android:id="@+id/userEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:background="#fff"
-                     android:drawablePadding="8dp"
+                    android:drawablePadding="8dp"
                     android:hint="Enter Email"
                     android:inputType="textEmailAddress"
                     android:padding="16dp" />
+
                 <EditText
                     android:id="@+id/userPass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:background="#fff"
-                     android:drawablePadding="8dp"
+                    android:drawablePadding="8dp"
                     android:hint="Enter Password"
                     android:inputType="textPassword"
                     android:padding="16dp" />
